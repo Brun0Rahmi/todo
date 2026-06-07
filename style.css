@@ -27,14 +27,14 @@
 
 /* Light Theme Variables */
 html[data-theme="light"] {
-    --bg-app: hsl(210, 30%, 97%);
-    --bg-sidebar: hsl(210, 30%, 95%);
+    --bg-app: hsl(140, 30%, 95%);
+    --bg-sidebar: hsl(140, 25%, 92%);
     --bg-surface: hsla(0, 0%, 100%, 0.85);
-    --bg-surface-hover: hsla(210, 30%, 98%, 0.9);
+    --bg-surface-hover: hsla(140, 30%, 96%, 0.9);
     --bg-modal: hsla(0, 0%, 100%, 0.95);
     
-    --border-color: hsla(210, 20%, 85%, 0.6);
-    --border-hover: hsla(210, 20%, 75%, 0.8);
+    --border-color: hsla(140, 20%, 84%, 0.6);
+    --border-hover: hsla(140, 20%, 74%, 0.8);
     
     --text-primary: hsl(220, 25%, 15%);
     --text-secondary: hsl(220, 15%, 45%);
@@ -57,14 +57,14 @@ html[data-theme="light"] {
 
 /* Dark Theme Variables (Default) */
 html[data-theme="dark"] {
-    --bg-app: hsl(220, 25%, 8%);
-    --bg-sidebar: hsl(220, 25%, 5%);
-    --bg-surface: hsla(220, 25%, 13%, 0.6);
-    --bg-surface-hover: hsla(220, 25%, 18%, 0.8);
-    --bg-modal: hsla(220, 25%, 12%, 0.95);
+    --bg-app: hsl(145, 30%, 7%);
+    --bg-sidebar: hsl(145, 30%, 4.5%);
+    --bg-surface: hsla(145, 25%, 11%, 0.6);
+    --bg-surface-hover: hsla(145, 25%, 15%, 0.8);
+    --bg-modal: hsla(145, 25%, 10%, 0.95);
     
-    --border-color: hsla(220, 25%, 25%, 0.4);
-    --border-hover: hsla(220, 25%, 35%, 0.6);
+    --border-color: hsla(145, 25%, 22%, 0.4);
+    --border-hover: hsla(145, 25%, 32%, 0.6);
     
     --text-primary: hsl(220, 20%, 96%);
     --text-secondary: hsl(220, 12%, 75%);
