@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskFlow — Seu Gerenciador de Tarefas Premium</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Canvas Confetti CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="brand">
+                    <div class="brand-icon">
+                        <i data-lucide="check-square"></i>
+                    </div>
+                    <span>TaskFlow</span>
+                </div>
+            </div>
+
+            <!-- Stats Widget -->
+            <div class="stats-card">
+                <div class="stats-progress">
+                    <svg class="progress-ring" width="80" height="80">
+                        <circle class="progress-ring__circle-bg" stroke="var(--border-color)" stroke-width="6" fill="transparent" r="32" cx="40" cy="40"/>
+                        <circle class="progress-ring__circle" stroke="var(--primary-color)" stroke-width="6" fill="transparent" r="32" cx="40" cy="40"/>
+                    </svg>
+                    <div class="progress-text">
+                        <span id="progress-percentage">0%</span>
+                        <small>concluído</small>
+                    </div>
+                </div>
+                <div class="stats-info">
+                    <div class="stat-item">
+                        <span id="total-tasks-count">0</span>
+                        <small>Total</small>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-item">
+                        <span id="pending-tasks-count">0</span>
+                        <small>Pendentes</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation / Categories -->
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <h3>Filtros Rápidos</h3>
+                    <ul class="nav-list">
+                        <li class="nav-item active" data-filter="all">
+                            <i data-lucide="layers"></i>
+                            <span>Todas</span>
+                            <span class="badge" id="badge-all">0</span>
+                        </li>
+                        <li class="nav-item" data-filter="today">
+                            <i data-lucide="calendar"></i>
+                            <span>Para Hoje</span>
+                            <span class="badge" id="badge-today">0</span>
+                        </li>
+                        <li class="nav-item" data-filter="overdue">
+                            <i data-lucide="alert-circle"></i>
+                            <span>Atrasadas</span>
+                            <span class="badge badge-warning" id="badge-overdue">0</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="nav-section">
+                    <div class="section-header-row">
+                        <h3>Categorias</h3>
+                        <button id="btn-add-category" title="Nova Categoria">
+                            <i data-lucide="plus"></i>
+                        </button>
+                    </div>
+                    <ul class="nav-list" id="categories-list">
+                        <!-- Dynamic Categories -->
+                    </ul>
+                </div>
+            </nav>
+
+            <!-- Theme Toggle Footer -->
+            <div class="sidebar-footer">
+                <button id="theme-toggle" class="theme-toggle-btn">
+                    <i data-lucide="moon" class="icon-dark"></i>
+                    <i data-lucide="sun" class="icon-light"></i>
+                    <span>Modo Escuro</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Top bar -->
+            <header class="main-header">
+                <div class="search-bar">
+                    <i data-lucide="search" class="search-icon"></i>
+                    <input type="text" id="search-input" placeholder="Buscar tarefas...">
+                </div>
+
+                <div class="header-actions">
+                    <button id="btn-open-modal" class="btn btn-primary">
+                        <i data-lucide="plus"></i>
+                        <span>Nova Tarefa</span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Dashboard Content -->
+            <div class="content-body">
+                <!-- Filters & Sorting Bar -->
+                <div class="filters-toolbar">
+                    <div class="active-filter-title">
+                        <h2 id="current-view-title">Todas as Tarefas</h2>
+                    </div>
+                    
+                    <div class="toolbar-controls">
+                        <div class="select-wrapper">
+                            <i data-lucide="sliders-horizontal" class="select-icon"></i>
+                            <select id="filter-priority">
+                                <option value="all">Todas Prioridades</option>
+                                <option value="high">Alta Prioridade</option>
+                                <option value="medium">Média Prioridade</option>
+                                <option value="low">Baixa Prioridade</option>
+                            </select>
+                        </div>
+
+                        <div class="select-wrapper">
+                            <i data-lucide="sort-asc" class="select-icon"></i>
+                            <select id="sort-by">
+                                <option value="date-desc">Data (Mais Recente)</option>
+                                <option value="date-asc">Data (Mais Antiga)</option>
+                                <option value="priority-desc">Prioridade (Alta-Baixa)</option>
+                                <option value="alphabetical">Alfabética</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Empty State -->
+                <div class="empty-state" id="empty-state">
+                    <div class="empty-illustration">
+                        <i data-lucide="check-square" size="64"></i>
+                    </div>
+                    <h3>Nada por aqui...</h3>
+                    <p>Adicione uma nova tarefa ou ajuste seus filtros para começar.</p>
+                </div>
+
+                <!-- Task Containers -->
+                <div class="task-sections">
+                    <!-- Pending Tasks List -->
+                    <div class="tasks-container" id="pending-tasks-list">
+                        <!-- Dynamic Task Cards -->
+                    </div>
+
+                    <!-- Completed Divider & List -->
+                    <div class="completed-section" id="completed-section-wrapper" style="display: none;">
+                        <button class="completed-header" id="btn-toggle-completed">
+                            <i data-lucide="chevron-down" id="completed-chevron"></i>
+                            <span>Concluídas (<span id="completed-count">0</span>)</span>
+                        </button>
+                        <div class="tasks-container completed-collapsed" id="completed-tasks-list">
+                            <!-- Dynamic Completed Task Cards -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Task Modal (Add/Edit) -->
+    <div class="modal-backdrop" id="task-modal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h2 id="modal-title">Nova Tarefa</h2>
+                <button class="btn-close-modal" id="btn-close-modal">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+            
+            <form id="task-form" class="modal-body">
+                <input type="hidden" id="task-id">
+                
+                <div class="form-group">
+                    <label for="task-title">Título *</label>
+                    <input type="text" id="task-title" required placeholder="O que precisa ser feito?">
+                </div>
+
+                <div class="form-group">
+                    <label for="task-notes">Descrição</label>
+                    <textarea id="task-notes" rows="3" placeholder="Adicione notas ou detalhes extras..."></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="task-date">Data de Vencimento</label>
+                        <input type="date" id="task-date">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="task-priority">Prioridade</label>
+                        <select id="task-priority">
+                            <option value="low">Baixa</option>
+                            <option value="medium" selected>Média</option>
+                            <option value="high">Alta</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="task-category">Categoria</label>
+                        <select id="task-category">
+                            <!-- Dynamic Options -->
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Subtasks List Maker -->
+                <div class="form-group subtasks-form-group">
+                    <label>Subtarefas</label>
+                    <div class="subtask-creator">
+                        <input type="text" id="new-subtask-input" placeholder="Adicionar sub-etapa...">
+                        <button type="button" class="btn btn-secondary" id="btn-add-subtask-item">
+                            <i data-lucide="plus"></i>
+                        </button>
+                    </div>
+                    <ul class="subtasks-preview-list" id="subtasks-preview-list">
+                        <!-- Temporary subtasks created before saving -->
+                    </ul>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" id="btn-cancel-task">Cancelar</button>
+                    <button type="submit" class="btn btn-primary" id="btn-save-task">Salvar Tarefa</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Category Modal -->
+    <div class="modal-backdrop" id="category-modal">
+        <div class="modal-card modal-sm">
+            <div class="modal-header">
+                <h2>Nova Categoria</h2>
+                <button class="btn-close-modal" id="btn-close-category-modal">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+            
+            <form id="category-form" class="modal-body">
+                <div class="form-group">
+                    <label for="category-name">Nome da Categoria *</label>
+                    <input type="text" id="category-name" required placeholder="Ex: Trabalho, Compras...">
+                </div>
+
+                <div class="form-group">
+                    <label>Cor de Destaque</label>
+                    <div class="color-picker-grid" id="color-picker-grid">
+                        <!-- Colors generated by JS -->
+                    </div>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" id="btn-cancel-category">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Adicionar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
